@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.inject.Inject;
+import rest.interceptor.TokenRequired;
 import rest.model.api.dto.User;
 import rest.model.api.in.IUser;
 import rest.service.token.Token;
@@ -30,10 +31,23 @@ public class UserService {
     private Jsonb jsonb = JsonbBuilder.create();
 
     @GET
-    @Path("/")
+    @Path("/test")
     @Produces("text/plain")
     public String ping() {
         return "OK";
+    }
+
+    @GET
+    @TokenRequired
+    @Path("/")
+    public Response getUser(ContainerRequestContext requestContext) {
+        String id = requestContext.getProperty("id").toString();
+        if(id.equals("Token not valid")) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        User user = userModel.getUser(Integer.parseInt(id));
+        String resultJson = jsonb.toJson(user);
+        return Response.ok(resultJson).build();
     }
 
 

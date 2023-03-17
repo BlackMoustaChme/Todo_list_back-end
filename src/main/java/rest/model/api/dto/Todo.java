@@ -7,7 +7,7 @@ public class Todo {
 
     private int userId;
     private String title;
-    private Date creationDate;
+    private String creationDate;
     private String text;
     private boolean check;
 
@@ -23,13 +23,13 @@ public class Todo {
         this.id = id;
     }
 
-    public Integer getUserId(){
-        return userId;
-    }
-
-    public void setUserId(Integer userId){
-        this.userId = userId;
-    }
+//    public Integer getUserId(){
+//        return userId;
+//    }
+//
+//    public void setUserId(Integer userId){
+//        this.userId = userId;
+//    }
     public String getTitle(){
         return title;
     }
@@ -38,11 +38,11 @@ public class Todo {
         this.title = title;
     }
 
-    public Date getCreationDate(){
+    public String getCreationDate(){
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate){
+    public void setCreationDate(String creationDate){
         this.creationDate = creationDate;
     }
 

@@ -84,4 +84,23 @@ public class UserRepository implements IUserRepository {
         }
         return user;
     }
+
+    @Override
+    public User getUser(Integer id) throws Exception {
+        User user = new User();;
+        try {
+            String query = "SELECT u FROM EUser u WHERE u.id = :id";
+            entityManager = entityManagerFactory.createEntityManager();
+            userTransaction.begin();
+            entityManager.joinTransaction();
+            EUser eUser = entityManager.createQuery(query, EUser.class).setParameter("id", id).getSingleResult();
+            user.setId(eUser.getUserId());
+            user.setLogin(eUser.getUserLogin());
+            user.setEmail(eUser.getUserEmail());
+        } catch (Exception e) {
+            Logger.getLogger(UserRepository.class.getName()).log(Level.INFO, null, e);
+            throw new RuntimeException(e);
+        }
+        return user;
+    }
 }

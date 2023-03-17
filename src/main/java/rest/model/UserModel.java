@@ -26,15 +26,6 @@ public class UserModel implements IUser {
             Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
             return false;
         }
-//        database realization
-//        boolean db = false;
-//        try {
-//            db = new UserDatabaseHandler().authUser(login, password);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return db;//2
-//        return false;
     }
 
     @Override
@@ -45,20 +36,21 @@ public class UserModel implements IUser {
             Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
             return false;
         }
-//        database realization
-//        boolean db = false;
-//        try {
-//            db = new UserDatabaseHandler().registerUser(login, password, lastName, name, middleName);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return db;
-//        return true;
     }
     @Override
     public User getUser(String login){
         try {
             return userRepository.getUser(login);
+        } catch (Exception e) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public User getUser(Integer id) {
+        try {
+            return userRepository.getUser(id);
         } catch (Exception e) {
             Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
             throw new RuntimeException(e);

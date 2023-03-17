@@ -4,6 +4,7 @@ import rest.model.api.dto.Todo;
 import rest.model.api.out.ITodoRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ITodo {
 
@@ -11,7 +12,7 @@ public interface ITodo {
 
     public ArrayList<Todo> getUserTodos(Integer id);
 
-    public Todo addTodo(Todo todo);
+    public void addTodo(Todo todo, Integer userId);
 
-    public void deleteTodo(ArrayList<Integer> id);
+    public void deleteTodo(List<Todo> todosList);
 }

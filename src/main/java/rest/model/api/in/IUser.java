@@ -10,5 +10,7 @@ public interface IUser {
     public boolean registerUser(String login, String password, String email);
 
     public User getUser(String login);
+
+    public User getUser(Integer id);
 }
 

@@ -10,5 +10,7 @@ public interface IUserRepository {
 
     public User getUser(String login) throws Exception;
 
+    public User getUser(Integer id) throws Exception;
+
 }
 

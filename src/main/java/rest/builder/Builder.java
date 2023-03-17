@@ -1,8 +1,8 @@
 package rest.builder;
 
-//import rest.model.api.in.ICar;
+import rest.model.api.in.ITodo;
 import rest.model.api.in.IUser;
-//import rest.model.api.out.ICarRepository;
+import rest.model.api.out.ITodoRepository;
 import rest.model.api.out.IUserRepository;
 
 import jakarta.inject.Inject;
@@ -16,11 +16,11 @@ public class Builder {
     @Inject @Default
     private IUserRepository userRepository;
 
-//    @Inject @Default
-//    private ICar carModel;
-//
-//    @Inject @Default
-//    private ICarRepository carRepository;
+    @Inject @Default
+    private ITodo todoModel;
+
+    @Inject @Default
+    private ITodoRepository todoRepository;
 
     @Produces @Built
     public IUser buildUserModel() {
@@ -28,9 +28,9 @@ public class Builder {
         return userModel;
     }
 
-//    @Produces @Built
-//    public ICar buildCarModel() {
-//        carModel.injectRepository(carRepository);
-//        return carModel;
-//    }
+    @Produces @Built
+    public ITodo buildCarModel() {
+        todoModel.injectRepository(todoRepository);
+        return todoModel;
+    }
 }
