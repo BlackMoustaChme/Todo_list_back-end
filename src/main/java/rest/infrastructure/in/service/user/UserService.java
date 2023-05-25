@@ -67,7 +67,7 @@ public class UserService {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 //     Token token = Token.generateToken(login);
-        if (userModel.authUser(login, password)){
+        if (userModel.authUser(login, password) || userModel.AuthInfo(login, password)){
             User userToken = userModel.getUser(login);
             String token = Token.generateToken(userToken.getId());
             String resultJSON = jsonb.toJson(token);

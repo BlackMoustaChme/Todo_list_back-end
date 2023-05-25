@@ -3,6 +3,7 @@ package rest.application.user.implementation;
 import rest.application.dto.User;
 import rest.application.user.api.in.IUser;
 import rest.application.user.api.out.IUserRepository;
+import rest.application.user.api.out.Interconnectable;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,11 +12,17 @@ import java.util.logging.Logger;
 public class UserModel implements IUser {
 
     private IUserRepository userRepository;
+
+    private Interconnectable interconnector;
+
     @Override
     public void injectRepository(IUserRepository userRepository) {
 
         this.userRepository = userRepository;
     }
+
+    @Override
+    public void injectInterconnector(Interconnectable interconnector) { this.interconnector = interconnector; }
 
 
     @Override
@@ -54,6 +61,16 @@ public class UserModel implements IUser {
         } catch (Exception e) {
             Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean AuthInfo(String login, String password) {
+        try {
+            return interconnector.userAuth(login, password);
+        } catch (Exception e) {
+            Logger.getLogger(UserModel.class.getName()).log(Level.INFO, null, e);
+            return false;
         }
     }
 }

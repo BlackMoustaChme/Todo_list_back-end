@@ -51,6 +51,28 @@ public class TodoRepository implements ITodoRepository {
     }
 
     @Override
+    public Todo getTodo(Integer id) throws Exception {
+        Todo todo = new Todo();
+        try {
+            String query = "SELECT t FROM ETodo t WHERE t.id =:id";
+            entityManager = entityManagerFactory.createEntityManager();
+            userTransaction.begin();
+            entityManager.joinTransaction();
+            List<ETodo> eTodos = entityManager.createQuery(query,ETodo.class).setParameter("id", id).getResultList();
+            todo.setId(eTodos.get(0).getTodoId());
+//                tod.setOwnerName(etodo.gettodoOwnerName());
+            todo.setTitle(eTodos.get(0).getTodoTitle());
+            todo.setCreationDate(eTodos.get(0).getTodoCreationDate());
+            todo.setText(eTodos.get(0).getTodoText());
+            todo.setCheck(eTodos.get(0).getTodoCheck());
+        } catch (Exception e) {
+            Logger.getLogger(TodoRepository.class.getName()).log(Level.INFO, null, e);
+            return todo;
+        }
+        return todo;
+    }
+
+    @Override
     public void addTodo(Todo todo, Integer userId) throws Exception {
         try {
             entityManager = entityManagerFactory.createEntityManager();
@@ -115,16 +137,16 @@ public class TodoRepository implements ITodoRepository {
     }
 
     @Override
-    public int getNumberOfCheckedTodos(Integer id) {
-        String query = "select count(t) from ETodo t where t.id = :id and t.check = true ";
-        int number = 0;
+    public long getNumberOfCheckedTodos(Integer id) {
+        String query = "select count(t) from ETodo t where t.user = :user_id and t.check = true ";
+        long number = 20;
         try {
             entityManager = entityManagerFactory.createEntityManager();
             userTransaction.begin();
             List<EUser> eUserList = entityManager.createQuery("SELECT u FROM EUser u WHERE u.id = :id", EUser.class).setParameter("id", id).getResultList();
             ETodo eTodo = new ETodo();
             eTodo.setTodoUserId(eUserList.get(0));
-            number = entityManager.createQuery(query).setParameter("id", eTodo.getTodoUserId()).getFirstResult();
+            number = (Long) entityManager.createQuery(query).setParameter("user_id", eTodo.getTodoUserId()).getSingleResult();
             entityManager.joinTransaction();
             entityManager.close();
         } catch (Exception e){
