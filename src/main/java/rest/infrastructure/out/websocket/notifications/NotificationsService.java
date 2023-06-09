@@ -1,21 +1,17 @@
 package rest.infrastructure.out.websocket.notifications;
 
-import jakarta.inject.Inject;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
-import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
-import rest.application.dto.User;
-import rest.application.todo.api.in.ITodo;
-import rest.application.todo.api.out.Notifiable;
-import rest.application.user.api.in.IUser;
-import rest.infrastructure.builder.Built;
+import rest.application.api.out.Notifiable;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @ServerEndpoint(value = "/notifications")
 public class NotificationsService implements Notifiable{
@@ -42,6 +38,7 @@ public class NotificationsService implements Notifiable{
             }
         }
         catch (IOException ioe) {
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.INFO, null, ioe);
         }
     }
 
@@ -49,11 +46,12 @@ public class NotificationsService implements Notifiable{
     public void notifyUser(String id, String message) {
         try {
             Session session = mapIdSs.get(id);
-            if (id!=null) {
+            if (id != null && session != null) {
                 session.getBasicRemote().sendText(message);
             }
         }
         catch (IOException ioe) {
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.INFO, null, ioe);
         }
     }
 

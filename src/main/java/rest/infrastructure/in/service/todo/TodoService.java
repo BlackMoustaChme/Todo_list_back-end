@@ -9,6 +9,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.DELETE;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
+import rest.application.dto.Share;
 import rest.infrastructure.builder.Built;
 
 import java.util.ArrayList;
@@ -19,13 +20,15 @@ import jakarta.json.bind.JsonbBuilder;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.inject.Inject;
+//import rest.infrastructure.builder.Built;
 import rest.infrastructure.in.interceptor.TokenRequired;
-import rest.application.user.api.in.IUser;
-import rest.application.todo.api.in.ITodo;
+import rest.application.api.in.IUser;
+import rest.application.api.in.ITodo;
 import rest.application.dto.Todo;
 @Path("/todo")
 public class TodoService {
 
+    /*
     @Inject
     @Built
     ITodo todoModel;
@@ -33,6 +36,14 @@ public class TodoService {
     @Inject
     @Built
     IUser userModel;
+
+     */
+
+    ////////////////
+    @Inject
+    @Built
+    ITodo todoMockModel;
+
 
     private Jsonb jsonb = JsonbBuilder.create();
 
@@ -44,7 +55,7 @@ public class TodoService {
         if(id.equals("Token not valid")) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        ArrayList<Todo> todos = todoModel.getUserTodos(Integer.parseInt(id));
+        ArrayList<Todo> todos = todoMockModel.getUserTodos(Integer.parseInt(id));
         String resultJson = jsonb.toJson(todos);
         return Response.ok(resultJson).build();
     }
@@ -59,7 +70,7 @@ public class TodoService {
         if(id.equals("Token not valid")) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        todoModel.getNumberOfCheckedTodos(Integer.parseInt(id), clientId);
+        todoMockModel.getNumberOfCheckedTodos(Integer.parseInt(id), clientId);
         return Response.ok("OK").build();
     }
 
@@ -78,7 +89,7 @@ public class TodoService {
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.addTodo(todo, Integer.parseInt(id));
+            todoMockModel.addTodo(todo, Integer.parseInt(id));
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -106,7 +117,7 @@ public class TodoService {
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.updateTodo(todo, Integer.parseInt(updateId));
+            todoMockModel.updateTodo(todo, Integer.parseInt(updateId));
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -134,7 +145,7 @@ public class TodoService {
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.deleteTodo(todosId);
+            todoMockModel.deleteTodo(todosId);
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -143,16 +154,30 @@ public class TodoService {
         return Response.ok(id).build();
     }
 
-//********************************************************
+//**************************SHARES******************************
+/*
     @GET
     @TokenRequired
-    @Path("/shared")
-    public Response getSharedTodos(@Context ContainerRequestContext requestContext) {
+    @Path("/shared/reading")
+    public Response getSharedTodosReadable(@Context ContainerRequestContext requestContext) {
         String id = requestContext.getProperty("id").toString();
         if(id.equals("Token not valid")) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        ArrayList<Todo> todos = todoModel.getUserTodos(Integer.parseInt(id));
+        ArrayList<Todo> todos = todoModel.getSharedTodosReadable(Integer.parseInt(id));
+        String resultJson = jsonb.toJson(todos);
+        return Response.ok(resultJson).build();
+    }
+
+    @GET
+    @TokenRequired
+    @Path("/shared/redaction")
+    public Response getSharedTodosRedactable(@Context ContainerRequestContext requestContext) {
+        String id = requestContext.getProperty("id").toString();
+        if(id.equals("Token not valid")) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        ArrayList<Todo> todos = todoModel.getSharedTodosRedactable(Integer.parseInt(id));
         String resultJson = jsonb.toJson(todos);
         return Response.ok(resultJson).build();
     }
@@ -166,14 +191,14 @@ public class TodoService {
         if(id.equals("Token not valid")) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        Todo todo;
+        Share share;
         try {
             try {
-                todo = jsonb.fromJson(jsonShare, Todo.class);
+                share = jsonb.fromJson(jsonShare, Share.class);
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.addTodo(todo, Integer.parseInt(id));
+            todoModel.shareTodo(share);
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -191,16 +216,16 @@ public class TodoService {
         if(id.equals("Token not valid")) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        Todo todo;
+        Share share;
 //        String jsonUpdateId = requestContext.getHeaderString("Data");
         String updateId = requestContext.getUriInfo().getQueryParameters().getFirst("id");
         try {
             try {
-                todo = jsonb.fromJson(jsonShare, Todo.class);
+                share = jsonb.fromJson(jsonShare, Share.class);
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.updateTodo(todo, Integer.parseInt(updateId));
+            todoModel.updateShareInfo(share);
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -220,14 +245,14 @@ public class TodoService {
         }
         String jsonDeleteId = requestContext.getHeaderString("Data");
 //        String t = requestContext.getUriInfo().;
-        List<Todo> todosId = new ArrayList<>();
+        List<Share> sharesId = new ArrayList<>();
         try {
             try {
-                todosId = jsonb.fromJson(jsonDeleteId, new ArrayList<Todo>(){}.getClass().getGenericSuperclass());
+                sharesId = jsonb.fromJson(jsonDeleteId, new ArrayList<Share>(){}.getClass().getGenericSuperclass());
             } catch (Exception e) {
                 throw new Exception("Error JSON transforming");
             }
-            todoModel.deleteTodo(todosId);
+//            todoModel.deleteUser(sharesId);
         } catch (JsonbException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
         } catch (Exception e) {
@@ -235,5 +260,5 @@ public class TodoService {
         }
         return Response.ok(id).build();
     }
-
+*/
 }

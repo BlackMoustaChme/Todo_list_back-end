@@ -21,13 +21,13 @@ public class Todo {
         this.id = id;
     }
 
-//    public Integer getUserId(){
-//        return userId;
-//    }
-//
-//    public void setUserId(Integer userId){
-//        this.userId = userId;
-//    }
+    public int getUserId(){
+        return userId;
+    }
+
+    public void setUserId(int userId){
+        this.userId = userId;
+    }
     public String getTitle(){
         return title;
     }

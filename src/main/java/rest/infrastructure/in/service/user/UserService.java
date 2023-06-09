@@ -13,7 +13,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.inject.Inject;
 import rest.infrastructure.in.interceptor.TokenRequired;
 import rest.application.dto.User;
-import rest.application.user.api.in.IUser;
+import rest.application.api.in.IUser;
 import rest.infrastructure.in.service.token.Token;
 //import rest.util.UserDatabaseHandler;
 
@@ -27,6 +27,7 @@ public class UserService {
     @Inject
     @Built
     IUser userModel;
+
     private Jsonb jsonb = JsonbBuilder.create();
 
     @GET
@@ -54,20 +55,14 @@ public class UserService {
     @Path("/authorization")
     @Produces("application/json")
     public Response authorization(String userJson) {
-//        String authToken = httpHeaders.getHeaderString("Authorization");
-//        if ((authToken.equals("") || authToken.equals("null")) && userJson == null) {
-//            return Response.status(Response.Status.UNAUTHORIZED).build();
-//        }
         User user;
         user = jsonb.fromJson(userJson, User.class);
         String login = user.getLogin();
         String password = user.getPassword();
-//     result[0] = "Yes";
         if (login == "" || login == null) {//попався
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-//     Token token = Token.generateToken(login);
-        if (userModel.authUser(login, password) || userModel.AuthInfo(login, password)){
+        if (userModel.AuthInfo(login, password)) {
             User userToken = userModel.getUser(login);
             String token = Token.generateToken(userToken.getId());
             String resultJSON = jsonb.toJson(token);

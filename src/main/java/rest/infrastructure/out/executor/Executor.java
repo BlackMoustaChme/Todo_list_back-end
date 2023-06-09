@@ -2,7 +2,7 @@ package rest.infrastructure.out.executor;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-import rest.application.todo.api.out.Executable;
+import rest.application.api.out.Executable;
 
 public class Executor implements Executable {
 

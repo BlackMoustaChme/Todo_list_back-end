@@ -6,18 +6,11 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.Queue;
-import rest.application.user.api.out.Interconnectable;
-import rest.infrastructure.out.repository.todo.TodoRepository;
+import rest.application.api.out.Interconnectable;
 import jakarta.jms.Message;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.inject.Inject;
-
-import rest.application.user.api.in.IUser;
-import rest.application.user.implementation.UserModel;
-import rest.infrastructure.builder.Built;
 
 public class Interconnector implements Interconnectable {
 
